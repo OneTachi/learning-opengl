@@ -38,6 +38,28 @@ int main()
     glViewport(0, 0, 800, 600);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    /**
+     * Our Vertex Buffer Object (VBO) => a place we store large amounts of vertex memory in GPU for the vertex shader
+     * We send this all at once cause sending info from CPU -> GPU is slow! (Thank goodness for CISC360)
+     * This is why we have a bunch of memory on GPU it seems.
+     */
+    unsigned int VBO;
+    glGenBuffers(1, &VBO);
+    // Here we actually bind our object to the VBO Buffer. We could bind our object to multiple buffers! 
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    /**   
+     * Copy in our vertice data to the buffer. The last argument tells OpenGL how frequent our buffer data changes and is used by the GPU.
+     * 
+     * --GL_X_Draw--
+     * Static: Doesn't Change + High Frequency
+     * Stream: Doesn't Change + Used a couple times
+     * Dynamic: Changes a lot + High Frequency
+     * 
+     * We don't plan on changing VBO and it will be used a lot. => GL_STATIC_DRAW
+    */ 
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
     // Simple Render Loop
     while (!glfwWindowShouldClose(window)) 
     {
