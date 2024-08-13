@@ -118,8 +118,21 @@ int main()
     // No longer need shader objects as they've been linked
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
+    // Use our shader program till we change it with same function
     glUseProgram(shaderProgram);
+
+    /**
+     * Specify how are vertex attributes are formatted to OpenGL
+     * -- Params for glVertexAtrribPointer --
+     * 1. What attribute data to configure. Remember we used layout (location = 0) in our vertex shader to specify where we are getting coords from.
+     * 2. Size of a single vertex attribute. 3 in our case (x, y, z)
+     * 3. Type of Data
+     * 4. Do you want to normalize the values? (We already did it ourself so no)
+     * 5. Stride -> Space between indices of attribute data. Since ours is tightly packed, we can just put the size of the attribute.
+     * 6. Offset. Requires wacky cast
+     */
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0); // GL_ARRAY_BUFFER is associated with 0 when above function is called I think?
 
     // Simple Render Loop
     while (!glfwWindowShouldClose(window)) 
