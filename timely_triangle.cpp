@@ -182,6 +182,7 @@ int main()
         //glDrawArrays(GL_TRIANGLES, 0, 3); // Draw. Params: Type of Drawing, start index, end index
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode, What to wireframe and how
         // check events and swap buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
