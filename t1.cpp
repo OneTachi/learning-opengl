@@ -10,7 +10,12 @@ float vertices[] = {
     -0.5f, -0.5f, 0.0f, // BL
     0.5f, -0.5f, 0.0f, // BR
     0.5f, 0.5f, 0.0f, // TR
-    -0.5f, 0.5f, 0.0f, // TL
+};
+
+float otherVertices[] = {
+    0.5f, -0.5f, 0.0f,
+    0.9f, -0.5f, 0.0f,
+    .9f, .5f, 0.0f,    
 };
 
 unsigned int indices[] = {
@@ -149,8 +154,8 @@ int main()
      * All the same as we've done with our VBO! Just some replacements with the Type!
      * Make sure not to unbind the EBO before you unbind VAO. Otherwise th
     */
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    //glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     /**
      * Specify how are vertex attributes are formatted to OpenGL. Also binds VBO to current VAO.
@@ -163,8 +168,19 @@ int main()
      * 6. Offset. Requires wacky cast
      */
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0); // Location. First Param in function above
+    glEnableVertexAttribArray(0); // GL_ARRAY_BUFFER is associated with 0 when above function is called I think?
     
+    unsigned int VBO2, VAO2; 
+    glGenBuffers(1, &VBO2);
+    glGenVertexArrays(1, &VAO2);
+
+    glBindVertexArray(VAO2);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO2);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(otherVertices), otherVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
 
 
     // Simple Render Loop
@@ -179,8 +195,10 @@ int main()
  
         glUseProgram(shaderProgram); // Use our shader program till we change it with same function
         glBindVertexArray(VAO); // Choose Specification
-        //glDrawArrays(GL_TRIANGLES, 0, 3); // Draw. Params: Type of Drawing, start index, end index
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 3); // Draw. Params: Type of Drawing, start index, end index
+        glBindVertexArray(VAO2); // Choose Specification
+        glDrawArrays(GL_TRIANGLES, 0, 3); // Draw. Params: Type of Drawing, start index, end index
+        //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode, What to wireframe and how
         // check events and swap buffers
