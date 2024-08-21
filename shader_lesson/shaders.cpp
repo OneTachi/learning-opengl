@@ -1,5 +1,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "shader.h"
+
+
 #include <iostream>
 #include <cmath>
 
@@ -40,67 +43,8 @@ int main()
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 
-    // Vertex Shader
-    const char *vertexShaderSource = "#version 330 core\n" 
-    "layout (location = 0) in vec3 aPos;\n"
-    "layout (location = 1) in vec3 aColor;"
-    "out vec3 color;\n"
-    "void main() {\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "   color = aColor;\n"
-    "}\0";
-
-    unsigned int vertexShader;
-    vertexShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-    glCompileShader(vertexShader);
-
-    // Check to see if compilation is successfull!
-    int success;
-    char infoLog[512];
-    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-    if (!success) 
-    {
-        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog); 
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    // Fragment Shader
-    const char *fragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "in vec3 color;\n"
-    "void main() {\n"
-    "   FragColor = vec4(color, 1.0);\n"
-    "}\0";
-    unsigned int fragmentShader;
-    fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-    glCompileShader(fragmentShader);
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-    if (!success) 
-    {
-        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog); 
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-
-    // Create Shader Program by linking our shaders in!
-    unsigned int shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
-
-    // Check Shader Program (different from shader checks)
-    glGetProgramiv(shaderProgram, GL_COMPILE_STATUS, &success);
-    if (!success) 
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::PROGRAM::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+    // Using the Shader we created! Handles all the compiling, linking, etc.
+    Shader shaderProgram = Shader("shader_lesson/shader.vs", "shader_lesson/shader.fs");
 
     unsigned int VBO;
     glGenBuffers(1, &VBO);
@@ -135,9 +79,9 @@ int main()
         int ourColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
         */
         // Must use glUseProgram below before we update any uniform. glUniform4f will be updating the current shader program.
-        glUseProgram(shaderProgram); 
         //glUniform4f(ourColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
+        shaderProgram.use();
         glBindVertexArray(VAO); 
         glDrawArrays(GL_TRIANGLES, 0, 3); 
         
