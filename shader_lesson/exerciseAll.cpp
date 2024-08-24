@@ -44,7 +44,7 @@ int main()
 
 
     // Using the Shader we created! Handles all the compiling, linking, etc.
-    Shader shaderProgram = Shader("shader_lesson/shader1.vs", "shader_lesson/shader.fs");
+    Shader shaderProgram = Shader("shader_lesson/shader1.vs", "shader_lesson/shader1.fs");
 
     unsigned int VBO;
     glGenBuffers(1, &VBO);
@@ -66,7 +66,7 @@ int main()
     
     shaderProgram.use();
     int offsetLocation = glGetUniformLocation(shaderProgram.ID, "offset");
-    glUniform1f(offsetLocation, 0.5f);
+    glUniform1f(offsetLocation, 0.0f);
 
     while (!glfwWindowShouldClose(window)) 
     {
