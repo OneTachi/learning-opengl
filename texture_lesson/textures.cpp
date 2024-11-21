@@ -16,6 +16,12 @@ float vertices[] = {
     0.0f, 0.5f, 0.0f,       0.0f, 0.0f, 1.0f, 
 };
 
+float textureCoords[] = {
+    0.0f, 0.0f,
+    1.0f, 0.0f,
+    0.5f, 1.0f
+};
+
 int main() 
 {
     glfwInit();
@@ -64,7 +70,17 @@ int main()
     glEnableVertexAttribArray(0); 
     glEnableVertexAttribArray(1);
     
-
+    /**
+     * glTexParameteri
+     * 1. Texture Target, either 2D or 3D
+     * 2. Texture Axis! s = x, t = y, (for 3D) r = z
+     * 3. Which wrapping mode. There are 4: Repeat, Mirrored Repeat, Clamp to Edge, Clamp to Border
+     * 
+     * Clamp to edge - Whatever color the edge is, it extends infinitely
+     * Clamp to border - any outside pixel will be some border color set. Note you'll add a border color argument to the end which will be a float[].
+     */
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
     while (!glfwWindowShouldClose(window)) 
     {
