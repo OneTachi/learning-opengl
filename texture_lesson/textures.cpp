@@ -73,7 +73,7 @@ int main()
     /**
      * glTexParameteri
      * 1. Texture Target, either 2D or 3D
-     * 2. Texture Axis! s = x, t = y, (for 3D) r = z
+     * 2. Texture Axis! s = x, t = y, (for 3D) r = z. If its not this, it's some other texture parameter you are specifying.
      * 3. Which wrapping mode. There are 4: Repeat, Mirrored Repeat, Clamp to Edge, Clamp to Border
      * 
      * Clamp to edge - Whatever color the edge is, it extends infinitely
@@ -81,6 +81,16 @@ int main()
      */
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+
+    /**
+     * -- Texture Filtering --
+     * What happens when the pixel you are getting a coordinate for is on the border of a pixel and some other colored pixels? 
+     * Nearest - picks the closest value and uses its value. This is what you used for 8 bit art in Godot. Emphasizes colors at small resolutions
+     * Linear - interpolates between colors when its not centered on a pixel color
+     * Min/Mag - Which options above you'd like to choose when the texture is upscaled or downscaled
+     */
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     while (!glfwWindowShouldClose(window)) 
     {
