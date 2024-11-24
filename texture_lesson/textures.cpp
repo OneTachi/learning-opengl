@@ -1,3 +1,6 @@
+#define STB_IMAGE_IMPLEMENTATION
+#include "../stb_image.h" // Image Loader
+
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "shader.h"
@@ -89,8 +92,50 @@ int main()
      * Linear - interpolates between colors when its not centered on a pixel color
      * Min/Mag - Which options above you'd like to choose when the texture is upscaled or downscaled
      */
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+
+    /**
+     * -- Mipmaps -- 
+     * When rendering faraway objects, they are a small fragment. So it gets difficult for OpenGL to pick a tex for the color of the fragment and uses a bunch of
+     * wasted memory on unused textures. So mipmaps render a smaller resolution texture based on LOD. Do not use for mag filter, doesn't make sense with it. 
+     * Nearest - picks closest mipmap level to render
+     * Linear - interpolates between mipmap levels
+     * Make sure to create the mipmap texture after loading the texture with `glGenerateMipmap`
+     */
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_LINEAR); // Linear Mipmap, nearest texture!
+
+    // Loading image with stb_images
+    int width, height, nrChannels; // nrChannels = # of color channels
+    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+    
+    // Texture Object 
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    /**
+     * glTexImage2D
+     * 1. Texture Target. If GL_TEXTURE_2D/3D/1D, bound texture. Look above!
+     * 2. Mipmap level, useful for manually creating mipmaps.
+     * 3. Format of image to store in
+     * 4 & 5. Dimensions
+     * 6. Always 0. Legacy stuff
+     * 7 & 8. Format & Datatype of original source image. Char = Byte
+     * 9. Actual image data
+     */
+    if (data) 
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else 
+    {
+        std::cout << "Failed to load texture." << std::endl;
+    }
+    stbi_image_free(data); // After creating texture & mipmaps, free image memory
+
 
     while (!glfwWindowShouldClose(window)) 
     {
