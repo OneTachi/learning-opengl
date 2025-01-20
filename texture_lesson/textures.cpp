@@ -145,6 +145,7 @@ int main()
     glGenTextures(1, &texture1);
     glBindTexture(GL_TEXTURE_2D, texture1);
 
+    stbi_set_flip_vertically_on_load(true); // OpenGL expects (0,0) to be on the bottom, but for pngs it's at the top!
     data = stbi_load("texture_lesson/awesomeface.png", &width, &height, &nrChannels, 0);
     if (data) 
     {
