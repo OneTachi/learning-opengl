@@ -48,7 +48,7 @@ int main()
 
 
     // Using the Shader we created! Handles all the compiling, linking, etc.
-    Shader shaderProgram = Shader("shader_lesson/shader.vs", "shader_lesson/shader.fs");
+    Shader shaderProgram = Shader("texture_lesson/shader.vs", "texture_lesson/shader.fs");
 
     unsigned int VBO;
     glGenBuffers(1, &VBO);
@@ -151,8 +151,10 @@ int main()
         //glUniform4f(ourColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
         shaderProgram.use();
+        glBindTexture(GL_TEXTURE_2D, texture);
         glBindVertexArray(VAO); 
-        glDrawArrays(GL_TRIANGLES, 0, 3); 
+        //glDrawArrays(GL_TRIANGLES, 0, 3); 
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
         glfwSwapBuffers(window);
         glfwPollEvents();
