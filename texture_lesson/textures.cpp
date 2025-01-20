@@ -20,6 +20,11 @@ float vertices[] = {
     -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
 };
 
+unsigned int indices[] = {  
+    0, 1, 3, // first triangle
+    1, 2, 3  // second triangle
+};
+
 int main() 
 {
     glfwInit();
@@ -50,16 +55,17 @@ int main()
     // Using the Shader we created! Handles all the compiling, linking, etc.
     Shader shaderProgram = Shader("texture_lesson/shader.vs", "texture_lesson/shader.fs");
 
-    unsigned int VBO;
+    unsigned int VBO, VAO, EBO;
     glGenBuffers(1, &VBO);
-
-    unsigned int VAO;
+    glGenBuffers(1, &EBO);
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // Vertex Attribute for Positions & Colors & Texture Coords respectively
     // index, indices, type, normalized?, size of entire thing, start of attribute
