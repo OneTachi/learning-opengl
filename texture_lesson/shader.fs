@@ -5,8 +5,10 @@ in vec2 texCoord;
 
 out vec4 FragColor;
 uniform sampler2D ourTexture; //the texture reference
+uniform sampler2D otherTexture;
 
 void main()
 {
-    FragColor = texture(ourTexture, texCoord) * vec4(color, 1.0);
+    // mix -> linearly interpolate between two values. 0.2 returns 80% of first value and 20% of the sescond value.
+    FragColor = mix(texture(ourTexture, texCoord), texture(otherTexture, texCoord), 0.2);
 }

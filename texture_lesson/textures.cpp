@@ -115,7 +115,7 @@ int main()
     unsigned char *data = stbi_load("texture_lesson/container.jpg", &width, &height, &nrChannels, 0);
     
     // Texture Object 
-    unsigned int texture;
+    unsigned int texture, texture1;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -140,6 +140,31 @@ int main()
     }
     stbi_image_free(data); // After creating texture & mipmaps, free image memory
 
+    // Load second texture. Repeat steps above.
+    // --------------------------------
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    data = stbi_load("texture_lesson/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data) 
+    {
+        // Since we are using a png, we need to specify an alpha channel. (7th argument)
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else 
+    {
+        std::cout << "Failed to load awesomeface.png texture" << std::endl;
+    }
+    stbi_image_free(data); // After creating texture & mipmaps, free image memory
+
+    shaderProgram.use();
+    /**
+     * Two different ways of setting the texture values within the fragment shader.
+     * Tells which texture unit we will use for shader sample
+     */
+    glUniform1i(glGetUniformLocation(shaderProgram.ID, "ourTexture"), 0);
+    shaderProgram.setInt("otherTexture", 1);
 
     while (!glfwWindowShouldClose(window)) 
     {
@@ -156,8 +181,17 @@ int main()
         // Must use glUseProgram below before we update any uniform. glUniform4f will be updating the current shader program.
         //glUniform4f(ourColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 
-        shaderProgram.use();
+        
+
+        /**
+         * Here we are binding texture units so we can use multiple textures within our fragment shader
+         * Make sure to tell OpenGL which texture unit belongs to which shader sample  
+         */
+        glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+
         glBindVertexArray(VAO); 
         //glDrawArrays(GL_TRIANGLES, 0, 3); 
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
