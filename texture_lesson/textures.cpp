@@ -112,7 +112,7 @@ int main()
 
     // Loading image with stb_images
     int width, height, nrChannels; // nrChannels = # of color channels
-    unsigned char *data = stbi_load("container.jpg", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("texture_lesson/container.jpg", &width, &height, &nrChannels, 0);
     
     // Texture Object 
     unsigned int texture;
